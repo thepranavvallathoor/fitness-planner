@@ -1,4 +1,4 @@
-const API_KEY = 'YOUR_GEMINI_API_KEY_HERE';
+const API_KEY = 'AIzaSyCYjU00d-5UMEQ7iah9NnI7H5yvNqfg50s';
 const history = [];
 
 async function sendMessage() {
