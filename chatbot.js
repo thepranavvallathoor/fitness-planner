@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyCYjU00d-5UMEQ7iah9NnI7H5yvNqfg50s';
+const API_KEY = 'AIzaSyAr97fziWf11_U6ml1-y3_bJnt2fzSQrVM';
 const history = [];
 
 async function sendMessage() {
