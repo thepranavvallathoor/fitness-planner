@@ -1,4 +1,4 @@
-const API_KEY = 'AIzaSyAr97fziWf11_U6ml1-y3_bJnt2fzSQrVM';
+const API_KEY = 'AIzaSyCTrQWmURtadCh3UuhyJ22Nj72SBlK4-UY';
 
 async function generatePlan() {
   const goal = document.getElementById('goal').value;
