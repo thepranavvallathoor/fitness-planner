@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitAI — Health Tips & Motivation</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav>
+    <div class="logo">FitAI 🏋️</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="workout.html">Workouts</a></li>
+      <li><a href="meal.html">Meal Plan</a></li>
+      <li><a href="tips.html" class="active">Tips</a></li>
+      <li><a href="chatbot.html">Chat</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <h1>TIPS & <span>MOTIVATION</span></h1>
+    <p>AI-generated health tips and daily motivation to keep you going.</p>
+  </div>
+
+  <div class="page-content">
+
+    <!-- Static tip cards (always visible) -->
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-icon">💧</div>
+        <h3>Stay Hydrated</h3>
+        <p>Drink at least 8 glasses of water daily. Dehydration reduces performance by up to 20%.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">😴</div>
+        <h3>Prioritise Sleep</h3>
+        <p>Muscles grow during rest, not during workouts. Aim for 7–9 hours of quality sleep every night.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📅</div>
+        <h3>Be Consistent</h3>
+        <p>3 workouts a week for 3 months beats 7 workouts a week for 2 weeks. Consistency wins.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🧘</div>
+        <h3>Manage Stress</h3>
+        <p>High cortisol from stress stores fat and breaks down muscle. Take breaks, breathe, recover.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">🥩</div>
+        <h3>Eat Enough Protein</h3>
+        <p>Aim for 0.8–1g of protein per kg of body weight daily to support muscle repair and growth.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">📈</div>
+        <h3>Track Progress</h3>
+        <p>Take weekly photos or log your workouts. Seeing progress is the best motivation to continue.</p>
+      </div>
+    </div>
+
+    <!-- AI Motivation Generator -->
+    <div class="form-card" style="margin-top: 2.5rem;">
+      <label>What are you struggling with today?</label>
+      <select id="t-struggle">
+        <option value="staying motivated to work out">Staying motivated to work out</option>
+        <option value="eating healthy consistently">Eating healthy consistently</option>
+        <option value="finding time to exercise">Finding time to exercise</option>
+        <option value="seeing results quickly enough">Not seeing results fast enough</option>
+        <option value="recovering from a missed week">Coming back after missing a week</option>
+        <option value="staying consistent long term">Staying consistent long-term</option>
+      </select>
+
+      <label>How are you feeling right now?</label>
+      <select id="t-mood">
+        <option value="unmotivated and tired">Unmotivated and tired</option>
+        <option value="stressed and overwhelmed">Stressed and overwhelmed</option>
+        <option value="okay but need a push">Okay, just need a push</option>
+        <option value="good and ready to go">Good and ready to go!</option>
+      </select>
+
+      <button onclick="generateTips()">GET MY MOTIVATION BOOST 🔥</button>
+    </div>
+
+    <div id="tips-output" class="output-card hidden"></div>
+
+  </div>
+
+  <div class="chat-fab" onclick="window.location='chatbot.html'">💬</div>
+
+  <footer>
+    <p>FitAI &copy; 2025 — Built for GED 102 Final Project, Canadian University Dubai</p>
+  </footer>
+
+  <script>
+    const API_KEY = 'YOUR_GEMINI_API_KEY_HERE'; // 🔑 Replace with your key
+
+    async function generateTips() {
+      const struggle = document.getElementById('t-struggle').value;
+      const mood     = document.getElementById('t-mood').value;
+      const output   = document.getElementById('tips-output');
+
+      output.classList.remove('hidden');
+      output.innerHTML = '<p>Generating your motivation boost... 🔥</p>';
+
+      const prompt = `You are an enthusiastic and empathetic fitness coach and life mentor. 
+A user is struggling with: ${struggle}
+Their current mood is: ${mood}
+
+Respond with:
+1. A short empathetic opening (2 sentences acknowledging how they feel)
+2. "5 Practical Tips" — numbered list of 5 specific, actionable tips to address their struggle
+3. "Your Daily Challenge" — one small specific action they can do TODAY (1-2 sentences)
+4. A powerful motivational quote to close (cite the author)
+
+Keep the tone warm, real, and energising — like a coach who genuinely believes in them.`;
+
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }]
+            })
+          }
+        );
+
+        const data = await response.json();
+        const text = data.candidates[0].content.parts[0].text;
+        output.innerHTML = formatOutput(text);
+
+      } catch (err) {
+        output.innerHTML = '<p>Something went wrong. Check your API key and try again.</p>';
+        console.error(err);
+      }
+    }
+
+    function formatOutput(text) {
+      return text
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm,   '<h2>$1</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g,    '<em>$1</em>')
+        .replace(/^- (.+)$/gm,   '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        .replace(/\n{2,}/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    }
+  </script>
+
+</body>
+</html>
