@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitAI — Your Personal Fitness Planner</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <nav>
+    <div class="logo">FitAI 🏋️</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="workout.html">Workouts</a></li>
+      <li><a href="meal.html">Meal Plan</a></li>
+      <li><a href="tips.html">Tips</a></li>
+      <li><a href="chatbot.html">Chat</a></li>
+    </ul>
+  </nav>
+
+  <main class="hero">
+    <h1>Your AI-Powered Fitness Plan</h1>
+    <p>Tell us about yourself and get a personalised workout + meal plan instantly.</p>
+
+    <div class="form-card">
+      <label>My fitness goal</label>
+      <select id="goal">
+        <option value="lose weight">Lose weight</option>
+        <option value="build muscle">Build muscle</option>
+        <option value="improve endurance">Improve endurance</option>
+        <option value="stay active">Stay generally active</option>
+      </select>
+
+      <label>My fitness level</label>
+      <select id="level">
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+      </select>
+
+      <label>Time available per day</label>
+      <select id="time">
+        <option value="20 minutes">20 minutes</option>
+        <option value="30 minutes">30 minutes</option>
+        <option value="45 minutes">45 minutes</option>
+        <option value="1 hour">1 hour</option>
+      </select>
+
+      <button onclick="generatePlan()">Generate My Plan ✨</button>
+    </div>
+
+    <div id="output" class="output-card hidden"></div>
+  </main>
+
+  <!-- Floating chatbot button -->
+  <div class="chat-fab" onclick="window.location='chatbot.html'">💬</div>
+
+  <script src="planner.js"></script>
+</body>
+</html>
