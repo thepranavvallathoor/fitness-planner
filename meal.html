@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitAI — Meal Plan Generator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav>
+    <div class="logo">FitAI 🏋️</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="workout.html">Workouts</a></li>
+      <li><a href="meal.html" class="active">Meal Plan</a></li>
+      <li><a href="tips.html">Tips</a></li>
+      <li><a href="chatbot.html">Chat</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-header">
+    <h1>MEAL <span>PLAN</span></h1>
+    <p>Get a simple, healthy meal plan tailored to your fitness goal.</p>
+  </div>
+
+  <div class="page-content">
+
+    <div class="form-card">
+      <label>Your fitness goal</label>
+      <select id="m-goal">
+        <option value="lose weight and reduce calorie intake">Lose weight</option>
+        <option value="build muscle with high protein intake">Build muscle</option>
+        <option value="maintain weight and eat balanced meals">Maintain weight</option>
+        <option value="improve energy and athletic performance">Boost energy & performance</option>
+      </select>
+
+      <label>Dietary preference</label>
+      <select id="m-diet">
+        <option value="no restrictions">No restrictions</option>
+        <option value="vegetarian">Vegetarian</option>
+        <option value="vegan">Vegan</option>
+        <option value="halal">Halal</option>
+        <option value="gluten-free">Gluten-free</option>
+      </select>
+
+      <label>Number of meals per day</label>
+      <select id="m-meals">
+        <option value="3 meals">3 meals</option>
+        <option value="3 meals and 1 snack">3 meals + 1 snack</option>
+        <option value="5 small meals">5 small meals</option>
+      </select>
+
+      <button onclick="generateMeal()">GENERATE MY MEAL PLAN 🥗</button>
+    </div>
+
+    <div id="meal-output" class="output-card hidden"></div>
+
+  </div>
+
+  <div class="chat-fab" onclick="window.location='chatbot.html'">💬</div>
+
+  <footer>
+    <p>FitAI &copy; 2025 — Built for GED 102 Final Project, Canadian University Dubai</p>
+  </footer>
+
+  <script>
+    const API_KEY = 'YOUR_GEMINI_API_KEY_HERE'; // 🔑 Replace with your key
+
+    async function generateMeal() {
+      const goal   = document.getElementById('m-goal').value;
+      const diet   = document.getElementById('m-diet').value;
+      const meals  = document.getElementById('m-meals').value;
+      const output = document.getElementById('meal-output');
+
+      output.classList.remove('hidden');
+      output.innerHTML = '<p>Preparing your meal plan... 🍽️</p>';
+
+      const prompt = `You are a certified nutritionist. Create a practical 7-day meal plan for someone with this profile:
+- Goal: ${goal}
+- Dietary preference: ${diet}
+- Meals per day: ${meals}
+
+Format the plan clearly:
+- A heading for each day (Day 1, Day 2, etc.)
+- List each meal (Breakfast, Lunch, Dinner, Snack if applicable) with a simple meal idea
+- Keep meals realistic, affordable, and easy to prepare
+- After the 7-day plan, add a short section called "Nutrition Tips" with 3 practical tips
+- End with an encouraging message about consistency
+
+Keep it simple — no need for exact calorie counts, just healthy practical options.`;
+
+      try {
+        const response = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }]
+            })
+          }
+        );
+
+        const data = await response.json();
+        const text = data.candidates[0].content.parts[0].text;
+        output.innerHTML = formatOutput(text);
+
+      } catch (err) {
+        output.innerHTML = '<p>Something went wrong. Check your API key and try again.</p>';
+        console.error(err);
+      }
+    }
+
+    function formatOutput(text) {
+      return text
+        .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+        .replace(/^## (.+)$/gm,  '<h2>$1</h2>')
+        .replace(/^# (.+)$/gm,   '<h2>$1</h2>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g,    '<em>$1</em>')
+        .replace(/^- (.+)$/gm,   '<li>$1</li>')
+        .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+        .replace(/\n{2,}/g, '<br><br>')
+        .replace(/\n/g, '<br>');
+    }
+  </script>
+
+</body>
+</html>
